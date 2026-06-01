@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Guess, Participant, ParticipantRole, Room, RoomSnapshot, Stroke } from "../models/game.js";
+import type { Guess, Participant, ParticipantRole, Room, RoomSnapshot, RoomStatus, Stroke } from "../models/game.js";
 import { STARTER_WORDS } from "../seed/starterData.js";
 
 const rooms = new Map<string, Room>();
@@ -316,7 +316,7 @@ function computeRoles(room: Room): ParticipantRole[] {
 }
 
 function getSecretWord(room: Room): string | null {
-  if (room.status !== "playing" || room.roundNumber < 1) {
+  if ((room.status !== "playing" && room.status !== "result") || room.roundNumber < 1) {
     return null;
   }
   return STARTER_WORDS[room.roundNumber - 1] ?? null;
@@ -328,6 +328,7 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     room.status === "playing" &&
     room.currentDrawerId !== null &&
     viewerParticipantId === room.currentDrawerId;
+  const showSecretWord = isViewerDrawer || room.status === "result";
 
   return {
     code: room.code,
@@ -338,7 +339,7 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     roles: computeRoles(room),
     currentDrawerId: room.currentDrawerId,
     roundNumber: room.roundNumber,
-    secretWord: isViewerDrawer ? secretWord : null,
+    secretWord: showSecretWord ? secretWord : null,
     scores: { ...room.scores },
     guesses: [...room.guesses]
   };
