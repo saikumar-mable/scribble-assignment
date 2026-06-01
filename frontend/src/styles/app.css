@@ -685,6 +685,53 @@ input {
   font-weight: 500;
 }
 
+/* --- RESULT VIEW --- */
+.result-view {
+  display: grid;
+  gap: 32px;
+  padding: 40px;
+  max-width: 100%;
+}
+
+.result-view__header {
+  display: grid;
+  gap: 8px;
+}
+
+.result-view__title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.result-view__word {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #78350f;
+  letter-spacing: 0.05em;
+  padding: 16px 24px;
+  background: #fef3c7;
+  border-radius: 12px;
+  border: 1px solid #f59e0b;
+  text-align: center;
+}
+
+.result-view__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .result-view__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 720px) {
   .app-shell {
     padding: 24px 16px;
