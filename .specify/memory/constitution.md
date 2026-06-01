@@ -1,19 +1,12 @@
-<!-- Sync Impact Report: unversioned template → v1.0.0 -->
-<!-- Modified Principles: (all new — first fill from template) -->
-<!--   PRINCIPLE_1 → I. Clean Code & Atomic Commits -->
-<!--   PRINCIPLE_2 → II. Deterministic & Testable Game Logic -->
-<!--   PRINCIPLE_3 → III. TypeScript Strictness -->
-<!--   PRINCIPLE_4 → IV. Spec-Artifact Consistency -->
-<!--   PRINCIPLE_5 → V. Brownfield Respect -->
-<!-- Added Sections: Technical Constraints, Development Workflow, Governance rules -->
+<!-- Sync Impact Report: v1.0.0 → v1.1.0 -->
+<!-- Modified Principles: none -->
+<!-- Added: Technical Constraint "No Feature Branches" -->
 <!-- Removed Sections: none -->
 <!-- Templates Requiring Updates: -->
-<!--   .specify/templates/plan-template.md → ✅ "Constitution Check" gate is generic placeholder; no change needed -->
+<!--   .specify/templates/plan-template.md → ✅ branch reference updated to same-branch -->
 <!--   .specify/templates/spec-template.md → ✅ no principle-specific references -->
-<!--   .specify/templates/tasks-template.md → ✅ "Commit after each task" aligns with Principle I -->
-<!--   .specify/templates/constitution-template.md → ✅ upstream, not consumed directly -->
-<!--   .specify/templates/agent-file-template.md → ✅ no constitution references -->
-<!--   .specify/templates/checklist-template.md → ✅ no constitution references -->
+<!--   .specify/templates/tasks-template.md --><!-- ✅ no branch references -->
+<!--   .specify/templates/checklist-template.md --><!-- ✅ no branch references -->
 <!--   AGENTS.md → ✅ no constitution references -->
 <!-- Follow-up TODOs: none -->
 
@@ -44,6 +37,7 @@ Existing code MUST NOT be rewritten without explicit justification in the plan a
 - **Tech Stack**: Backend — Node.js + Express + TypeScript + Zod. Frontend — React 18 + React Router 6 + Vite + TypeScript.
 - **In-Memory Room Isolation**: Each room MUST be fully isolated. Room data MUST be cleaned up when no longer needed.
 - **No New Top-Level Dependencies**: Do not add libraries beyond what the starter ships unless the plan artifact explicitly justifies the need.
+- **No Feature Branches**: All incremental features MUST be developed on the same single branch. Per-feature branches MUST NOT be created. The repository uses a single long-lived branch for all work.
 
 ## Development Workflow
 
@@ -60,4 +54,4 @@ Existing code MUST NOT be rewritten without explicit justification in the plan a
 
 This constitution supersedes all informal practices and ad-hoc conventions. Amendments MUST be documented, versioned (semantic), and accompanied by a rationale. Every pull request MUST include a compliance check against these principles. Violations MUST be called out in review and either fixed or explicitly deferred with a documented reason.
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-18 | **Last Amended**: 2026-06-01
+**Version**: 1.1.0 | **Ratified**: 2026-05-18 | **Last Amended**: 2026-06-01
