@@ -10,6 +10,7 @@ export interface Participant {
 export interface Room {
   code: string;
   status: RoomStatus;
+  hostId: string;
   participants: Participant[];
   createdAt: string;
   updatedAt: string;
