@@ -498,6 +498,13 @@ input {
   letter-spacing: -0.025em;
 }
 
+.drawer-indicator {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 /* Responsive grid: 3-column layout */
 .game-page__layout {
   display: grid;
