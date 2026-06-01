@@ -124,8 +124,24 @@ All players can see the full history of guesses for the current round, including
 - The round and secret word are already set up by Scenario 2 — this feature assumes an active round with a drawer, guessers, and a secret word.
 - The canvas is a basic 2D drawing surface (freehand drawing with a single color/brush). Advanced drawing tools (color picker, brush sizes, shapes) are out of scope.
 - Canvas state is synced via periodic updates, not real-time streaming. This means there may be a short delay between drawing and visibility for other players.
-- The drawer cannot see guesses during the round to prevent influencing their drawing.
+- The drawer can see all guesses during the round (adds to the shared game experience).
 - The polling interval is assumed to be 2 seconds (matching Scenario 2's lobby polling interval) for canvas state and guess history.
 - Guesses are compared against the secret word on the server side only — the word never leaves the server for guessers (preserving FR-007 from Scenario 2).
 - Scores persist across rounds within the same game session but reset when a new game is created.
 - Multiple rounds and round transitions are out of scope for this scenario — the round is assumed to be active throughout.
+
+---
+
+## Clarifications
+
+### Session 2026-06-01
+
+1. **Drawer's visibility of guesses (Q1)**: The drawer CAN see all guesses during the round. The assumption was corrected to match User Story 4's acceptance criteria. This adds to the shared game experience and allows the drawer to see progress.
+
+2. **Canvas sync mechanism (Q2)**: Canvas state is synced via HTTP polling (the drawer's strokes are accessible through a server endpoint that guessers poll periodically). No WebSockets are used, in accordance with the constitution.
+
+3. **Round continuation after correct guess (Q3)**: When a guesser submits a correct guess, the round continues for the remaining guessers. The correct guesser is locked out from scoring additional points in the same round (per FR-010), but continues participating in the game view.
+
+4. **Guess input method (Q4)**: Free text input with server-side comparison. The guess is trimmed of leading/trailing whitespace and compared case-insensitively against the secret word using exact (not fuzzy) matching.
+
+5. **Scoring formula (Q5)**: Flat 100 points per correct guess. No speed bonus. Every first correct guess by a guesser in a round is worth exactly 100 points.
