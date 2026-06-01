@@ -86,7 +86,7 @@ export const api = {
     });
   },
   submitGuess(code: string, participantId: string, text: string) {
-    return request<{ result: "correct" | "incorrect"; guess: Guess; scores: Record<string, number>; guesses: Guess[] }>(
+    return request<{ result: "correct" | "incorrect"; guess: Guess; scores: Record<string, number>; guesses: Guess[]; roomStatus: string }>(
       `/rooms/${encodeURIComponent(code)}/guess`,
       { method: "POST", body: JSON.stringify({ participantId, text }) }
     );
