@@ -16,10 +16,10 @@
 **Purpose**: Types, store functions, schemas, and routes for round-end and restart.
 
 - [ ] T001 [P] Add "result" to RoomStatus union type in `backend/src/models/game.ts`
-- [ ] T002 Add endRound() and restartGame() functions; update submitGuess() with auto-end detection in `backend/src/services/roomStore.ts`
+- [ ] T002 Add endRound() (idempotent — accepts already-"result") and restartGame() functions (preserves scores, clears round state per field map); update submitGuess() with auto-end detection (guard: only if nonDrawerParticipants.length > 0) and include `status` in the response in `backend/src/services/roomStore.ts`
 - [ ] T003 [P] Add endRoundSchema and restartGameSchema in `backend/src/api/schemas.ts`
 - [ ] T004 Add POST /:code/end-round and POST /:code/restart routes in `backend/src/api/rooms.ts`
-- [ ] T005 Update toRoomSnapshot() to reveal secretWord when status is "result" in `backend/src/services/roomStore.ts`
+- [ ] T005 Update getSecretWord() to allow both "playing" and "result" statuses; update toRoomSnapshot() visibility logic to reveal secretWord to all when status is "result" in `backend/src/services/roomStore.ts`
 
 ---
 
@@ -29,7 +29,7 @@
 
 - [ ] T006 [P] Update RoomSnapshot.status to include "result" in `frontend/src/services/api.ts`
 - [ ] T007 Add endRound() and restartGame() API methods in `frontend/src/services/api.ts`
-- [ ] T008 Add endRound() and restartGame() store methods in `frontend/src/state/roomStore.ts`
+- [ ] T008 Add endRound() and restartGame() store methods (restartGame must call setCanvasStrokes([]) to clear stale local canvas state) in `frontend/src/state/roomStore.ts`
 
 ---
 
@@ -46,7 +46,7 @@
 
 **Purpose**: Wire result detection, End Round button, and ResultView into GamePage.
 
-- [ ] T011 Integrate ResultView into GamePage, add status detection for "result" (show result vs game UI), add End Round button for drawer in `frontend/src/pages/GamePage.tsx`
+- [ ] T011 In GamePage: change room poll redirect condition from `!== "playing"` to `=== "lobby"`; add "result" status detection to show ResultView instead of game UI; add End Round button for drawer (visible when status === "playing" && isDrawer); add canvas polling guard (`status !== "playing"` → skip) in `frontend/src/pages/GamePage.tsx`
 
 ---
 

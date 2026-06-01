@@ -60,16 +60,42 @@ frontend/
 
 ## Complexity Tracking
 
-Low complexity. All changes are additive and follow existing patterns. Round-end detection is a simple check after submitGuess. Result view is a new component reusing existing Scoreboard/ResultPanel logic. Restart is a state reset similar to startGame.
+Low complexity overall. However, several gotchas identified during analysis must be handled:
+
+| Gotcha | Impact | Fix |
+|--------|--------|-----|
+| Race: auto-end vs manual end simultaneous | Drawer sees error or guesser loses points | `endRound` is idempotent (accepts already-"result") |
+| `getSecretWord` returns null for "result" | Word never reveals to players | Allow both "playing" and "result" statuses |
+| GamePage redirects on any non-"playing" | Bypasses result view | Change condition to `=== "lobby"` |
+| Canvas polling during "result" | Unnecessary HTTP calls | Guard with `room.status === "playing"` |
+| Frontend canvas state stale after restart | Shows old drawing in lobby | `restartGame` store method clears strokes |
+| `submitGuess` response lacks `status` | 2s delay before frontend shows result | Include `status` in `SubmitGuessResult` |
+
+## Restart State Reset Map
+
+| Field | Action |
+|-------|--------|
+| `code` | Preserve |
+| `status` | Set to `"lobby"` |
+| `hostId` | Preserve |
+| `participants` | Preserve |
+| `currentDrawerId` | Set to `null` |
+| `roundNumber` | Reset to `0` |
+| `scores` | **Preserve** (cleared only on new game start) |
+| `guesses` | Clear to `[]` |
+| `correctGuessers` | Clear to `[]` |
+| `canvasStrokes` | Clear to `[]` |
+| `createdAt` | Preserve |
+| `updatedAt` | Set to `now()` |
 
 ## Implementation Order
 
 1. Backend: Add "result" to RoomStatus type
-2. Backend: Add endRound + restartGame functions + auto-end in submitGuess
+2. Backend: Add endRound (idempotent) + restartGame functions + auto-end in submitGuess (includes status in response, guards empty guesser list)
 3. Backend: Add endRound + restartGame schemas and routes
-4. Backend: Update toRoomSnapshot to reveal secret word in "result" state
-5. Frontend: Update RoomSnapshot type, add endRound/restartGame API + store methods
+4. Backend: Update toRoomSnapshot + getSecretWord to reveal secret word in "result" state
+5. Frontend: Update RoomSnapshot type, add endRound/restartGame API + store methods (restartGame clears canvas state)
 6. Frontend: Create ResultView component
-7. Frontend: Update GamePage to detect "result" status, show ResultView, add End Round button
+7. Frontend: Update GamePage (navigation condition `=== "lobby"`, detect "result" → show ResultView, End Round button, canvas polling guard)
 8. Frontend: Add result view CSS
 9. Build validation

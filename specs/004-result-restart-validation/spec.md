@@ -76,20 +76,26 @@ When the round ends (status changes from "playing" to "result"), players current
 - A player joins the room after the round has ended but before restart — they see the lobby view after joining (join returns lobby status).
 - Only one participant is the drawer and there are no guessers (should not happen due to startGame requiring 2+ participants).
 - The drawer and host are the same person (current implementation) — the End Round button and Restart button appear in separate contexts.
+- Race condition: drawer clicks "End Round" simultaneously with last guesser submitting correct answer — `endRound` is idempotent (accepts already-"result" as success), so the drawer never sees an error.
+- GamePage poll detects "result" status: must NOT navigate to lobby (current `!== "playing"` condition would incorrectly redirect). Condition must be `=== "lobby"`.
+- Canvas polling continues during "result" status unnecessarily — guard canvas polling effect with `room.status === "playing"`.
+- Frontend store has stale `canvasStrokes` after restart — `restartGame` store method must call `setCanvasStrokes([])`.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: System MUST transition room status from "playing" to "result" when all non-drawer participants have submitted a correct guess.
-- **FR-002**: System MUST allow the drawer to manually end the round via a dedicated endpoint, transitioning the room to "result" status.
-- **FR-003**: System MUST reveal the correct secret word to ALL participants (not just the drawer) when the room is in "result" status.
+- **FR-002**: System MUST allow the drawer to manually end the round via a dedicated endpoint, transitioning the room to "result" status. The endpoint MUST be idempotent: if the room is already in "result" status, it returns success without error (handles race condition with auto-end).
+- **FR-003**: System MUST reveal the correct secret word to ALL participants (not just the drawer) when the room is in "result" status. The `getSecretWord` function MUST allow both "playing" and "result" statuses to return the word.
 - **FR-004**: System MUST display the correct secret word, final scores, and complete guess history on the result view.
 - **FR-005**: System MUST provide a restart endpoint that only the host can call, transitioning the room from "result" to "lobby" status.
 - **FR-006**: System MUST preserve all participants when restarting the room.
 - **FR-007**: System MUST clear all round-specific state on restart: canvasStrokes, guesses, correctGuessers, currentDrawerId (set to null), roundNumber (reset to 0).
 - **FR-008**: System MUST auto-detect the "result" status on the GamePage via polling and display the result view without redirecting away.
 - **FR-009**: System MUST reject restart requests from non-host participants with a 403 error.
+- **FR-010**: System MUST include the updated `status` field in the `submitGuess` response so the frontend can immediately reflect "result" without waiting for the next poll.
+- **FR-011**: System MUST guard the auto-end check: only auto-end if there is at least one non-drawer participant (prevents false end on empty guesser list).
 
 ### Key Entities
 
@@ -114,6 +120,11 @@ When the round ends (status changes from "playing" to "result"), players current
 - The auto-end-round trigger checks after every guess submission: if all guessers have guessed correctly, the round ends automatically.
 - The "End Round" button is shown to the drawer only during gameplay (status "playing").
 - The "Restart Game" button is shown to the host only during result (status "result").
+- The `endRound` endpoint is idempotent: calling it when status is already "result" returns success (to handle the race condition where auto-end and manual end occur simultaneously).
+- The `submitGuess` response includes the updated `status` field so the frontend can immediately show the result view without waiting for the next poll cycle.
+- The GamePage polling condition for redirecting to lobby is `=== "lobby"` (not `!== "playing"`), so "result" status keeps the user on GamePage.
+- Canvas polling is disabled when `room.status !== "playing"` to avoid wasteful requests during "result".
+- The `restartGame` store method clears local canvas state (`setCanvasStrokes([])`).
 
 ## Clarifications
 

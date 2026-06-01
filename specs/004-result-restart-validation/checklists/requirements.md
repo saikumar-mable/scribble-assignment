@@ -14,14 +14,16 @@
 
 ### FR → Acceptance Scenario Mapping
 - [ ] FR-001: Auto-end when all guessers guess correctly → US1 AS1
-- [ ] FR-002: Manual end round by drawer → US1 AS2
+- [ ] FR-002: Manual end round by drawer (idempotent) → US1 AS2
 - [ ] FR-003: Secret word revealed to all in result → US2 AS1
 - [ ] FR-004: Display word, scores, history → US2 AS2, AS3
 - [ ] FR-005: Host-only restart endpoint → US3 AS1
 - [ ] FR-006: Preserve participants on restart → US3 AS2
-- [ ] FR-007: Clear round state on restart → US3 AS3
+- [ ] FR-007: Clear round state on restart (scores preserved) → US3 AS3
 - [ ] FR-008: Auto-detect result on GamePage → US4 AS1
 - [ ] FR-009: Reject non-host restart → US3 AS4
+- [ ] FR-010: submitGuess response includes status → US4 AS1 (faster transition)
+- [ ] FR-011: Auto-end guard for empty guesser list → US1 AS1 edge case
 
 ## Implementation Checklist
 
