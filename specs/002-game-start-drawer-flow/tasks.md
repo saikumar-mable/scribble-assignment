@@ -54,7 +54,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 1
 
-- [ ] T002 [P] [US1] Add `.trim()` to `playerNameSchema` in `backend/src/api/schemas.ts`
+- [X] T002 [P] [US1] Add `.trim()` to `playerNameSchema` in `backend/src/api/schemas.ts`
 - [ ] T003 [P] [US1] Apply trimmed name in `displayName` and `createParticipant` helpers in `backend/src/services/roomStore.ts`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
