@@ -133,7 +133,7 @@ export function GamePage() {
           </Card>
 
           <Card title="Your Guess">
-            <GuessForm />
+            <GuessForm isDrawer={isDrawer} />
           </Card>
         </aside>
       </div>
