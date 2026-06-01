@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import type { Participant, Room, RoomSnapshot } from "../models/game.js";
-import { STARTER_ROLES, STARTER_WORDS } from "../seed/starterData.js";
+import type { Participant, ParticipantRole, Room, RoomSnapshot } from "../models/game.js";
+import { STARTER_WORDS } from "../seed/starterData.js";
 
 const rooms = new Map<string, Room>();
 
@@ -140,8 +140,26 @@ export function saveRoom(room: Room) {
   return getRoom(room.code);
 }
 
+function computeRoles(room: Room): ParticipantRole[] {
+  if (!room.currentDrawerId) {
+    return [];
+  }
+  return room.participants.map((p) => (p.id === room.currentDrawerId ? "drawer" : "guesser"));
+}
+
+function getSecretWord(room: Room): string | null {
+  if (room.status !== "playing" || room.roundNumber < 1) {
+    return null;
+  }
+  return STARTER_WORDS[room.roundNumber - 1] ?? null;
+}
+
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
-  void viewerParticipantId;
+  const secretWord = getSecretWord(room);
+  const isViewerDrawer =
+    room.status === "playing" &&
+    room.currentDrawerId !== null &&
+    viewerParticipantId === room.currentDrawerId;
 
   return {
     code: room.code,
@@ -149,6 +167,9 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     hostId: room.hostId,
     participants: room.participants.map((participant) => ({ ...participant })),
     availableWords: listWords(),
-    roles: [...STARTER_ROLES]
+    roles: computeRoles(room),
+    currentDrawerId: room.currentDrawerId,
+    roundNumber: room.roundNumber,
+    secretWord: isViewerDrawer ? secretWord : null
   };
 }
