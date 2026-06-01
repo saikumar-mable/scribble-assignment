@@ -2,15 +2,17 @@ import { Router } from "express";
 import {
   clearCanvasSchema,
   createRoomSchema,
+  endRoundSchema,
   HttpError,
   joinRoomSchema,
+  restartGameSchema,
   roomCodeParamsSchema,
   roomViewerQuerySchema,
   saveCanvasSchema,
   startGameSchema,
   submitGuessSchema
 } from "./schemas.js";
-import { clearCanvasState, createRoom, getCanvasState, getGuesses, getRoom, joinRoom, saveCanvasState, startGame, submitGuess, toRoomSnapshot } from "../services/roomStore.js";
+import { clearCanvasState, createRoom, endRound, getCanvasState, getGuesses, getRoom, joinRoom, restartGame, saveCanvasState, startGame, submitGuess, toRoomSnapshot } from "../services/roomStore.js";
 
 export function createRoomsRouter() {
   const router = Router();
@@ -178,7 +180,58 @@ export function createRoomsRouter() {
         result: result.result,
         guess: result.guess,
         scores: result.scores,
-        guesses: result.guesses
+        guesses: result.guesses,
+        roomStatus: result.roomStatus
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/end-round", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId } = endRoundSchema.parse(request.body);
+      const result = endRound(code.toUpperCase(), participantId);
+
+      if (!result.ok) {
+        const message =
+          result.error === 404
+            ? "Room not found"
+            : result.error === 403
+              ? "Only the drawer can end the round"
+              : "Unable to end round";
+
+        throw new HttpError(result.error, message);
+      }
+
+      response.json({
+        room: toRoomSnapshot(result.room, participantId)
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/restart", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId } = restartGameSchema.parse(request.body);
+      const result = restartGame(code.toUpperCase(), participantId);
+
+      if (!result.ok) {
+        const message =
+          result.error === 404
+            ? "Room not found"
+            : result.error === 403
+              ? "Only the host can restart the game"
+              : "Unable to restart game";
+
+        throw new HttpError(result.error, message);
+      }
+
+      response.json({
+        room: toRoomSnapshot(result.room, participantId)
       });
     } catch (error) {
       next(error);
