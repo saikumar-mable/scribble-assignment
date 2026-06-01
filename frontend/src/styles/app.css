@@ -578,6 +578,56 @@ input {
   font-weight: 700;
 }
 
+.guess-history {
+  display: grid;
+  gap: 8px;
+}
+
+.guess-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.guess-entry--correct {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.guess-entry--incorrect {
+  background: var(--surface-strong);
+}
+
+.guess-entry__name {
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 60px;
+}
+
+.guess-entry__text {
+  flex: 1;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.guess-entry__result {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.guess-entry--correct .guess-entry__result {
+  color: #059669;
+}
+
+.guess-entry--incorrect .guess-entry__result {
+  color: #9ca3af;
+}
+
 /* Responsive grid: 3-column layout */
 .game-page__layout {
   display: grid;
