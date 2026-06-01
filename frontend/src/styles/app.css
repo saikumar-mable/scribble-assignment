@@ -498,6 +498,31 @@ input {
   letter-spacing: -0.025em;
 }
 
+.game-page__secret-word {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+}
+
+.secret-word__label {
+  color: #92400e;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.secret-word__value {
+  color: #78350f;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
 .drawer-indicator {
   margin: 0;
   color: var(--ink-soft);

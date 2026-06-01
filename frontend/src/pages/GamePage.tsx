@@ -36,6 +36,13 @@ export function GamePage() {
         <RoomCodeBadge code={room.code} />
       </div>
 
+      {isDrawer && room.secretWord && (
+        <div className="game-page__secret-word">
+          <span className="secret-word__label">Your word:</span>
+          <span className="secret-word__value">{room.secretWord}</span>
+        </div>
+      )}
+
       <div className="game-page__layout">
         <aside className="game-page__sidebar game-page__sidebar--left">
           <Scoreboard />

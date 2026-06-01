@@ -86,7 +86,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 3
 
-- [ ] T008 [US3] Display secret word to drawer only in `frontend/src/pages/GamePage.tsx` — show the secret word prominently when the viewer is the drawer; show nothing (or placeholder) for guessers
+- [X] T008 [US3] Display secret word to drawer only in `frontend/src/pages/GamePage.tsx` — show the secret word prominently when the viewer is the drawer; show nothing (or placeholder) for guessers
 
 **Checkpoint**: All user stories should now be independently functional
 
