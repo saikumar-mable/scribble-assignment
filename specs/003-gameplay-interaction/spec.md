@@ -23,9 +23,24 @@ The drawer can draw on the canvas using a basic drawing tool and clear it to sta
 
 ---
 
-### User Story 2 - Submit and Score Guesses (Priority: P1)
+### User Story 2 - Auto-Navigate to Game on Start (Priority: P1)
 
-Guessers submit text guesses for the secret word. Each guess is trimmed of whitespace, compared case-insensitively to the secret word, and empty guesses are rejected with an error. Correct guesses add 100 points to the guesser's score; incorrect guesses add 0. All guesses and their results are recorded in the guess history.
+When the host starts the game from the lobby, all guessers in the lobby automatically detect the state change via polling and are redirected to the game view. The drawer also reaches the game view (via the host start flow from Scenario 2), ensuring all players land on the correct screen without manual refresh.
+
+**Why this priority**: Without auto-navigation, guessers would remain on the lobby screen indefinitely and never participate in gameplay.
+
+**Independent Test**: Open two browser tabs and join the same room. Start the game from the host tab. Within a few seconds, both tabs (host drawer and guesser) should show the game view.
+
+**Acceptance Scenarios**:
+
+1. **Given** a guesser is in the lobby and the game has not started, **When** the host starts the game, **Then** the guesser is automatically redirected to the game view within 3 seconds (via polling detection).
+2. **Given** a guesser is in the lobby and the host has already started the game, **When** the guesser's next poll completes, **Then** they see the room status as "playing" and are redirected to the game view.
+
+---
+
+### User Story 3 - Submit and Score Guesses (Priority: P1)
+
+Once all players are on the game view, guessers submit text guesses for the secret word. Each guess is trimmed of whitespace, compared case-insensitively to the secret word, and empty guesses are rejected with an error. Correct guesses add 100 points to the guesser's score; incorrect guesses add 0. All guesses and their results are recorded in the guess history.
 
 **Why this priority**: Guessing is the primary interaction for non-drawer players. Scoring creates engagement and competition.
 
@@ -42,7 +57,7 @@ Guessers submit text guesses for the secret word. Each guess is trimmed of white
 
 ---
 
-### User Story 3 - Guess History via Polling (Priority: P2)
+### User Story 4 - Guess History via Polling (Priority: P2)
 
 All players can see the full history of guesses for the current round, including who guessed what and whether each guess was correct. The history is synced via HTTP polling.
 
@@ -66,23 +81,25 @@ All players can see the full history of guesses for the current round, including
 - Canvas is cleared by the drawer while a guesser is viewing — on the next poll, the guesser sees a blank canvas.
 - Guesser submits a guess during a round transition — guess should be rejected with an appropriate error (round is no longer active).
 - Extremely long guess text — system should handle gracefully by truncating or rejecting with a message.
+- Player's poll request fails during the lobby-to-game transition — they remain on the lobby view until the next successful poll detects the "playing" status.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide a drawing surface that responds to the drawer's pointer input during an active round.
-- **FR-002**: System MUST provide a "Clear Canvas" button for the drawer that resets the canvas to blank.
-- **FR-003**: System MUST make the current canvas state available to all players so that guessers see the drawing.
-- **FR-004**: System MUST accept guess submissions from non-drawer participants during an active round.
-- **FR-005**: System MUST trim leading and trailing whitespace from submitted guesses before validation.
-- **FR-006**: System MUST reject empty or whitespace-only guesses with a clear error message.
-- **FR-007**: System MUST compare guesses against the secret word case-insensitively.
-- **FR-008**: System MUST award 100 points to a guesser for their first correct guess in a round.
-- **FR-009**: System MUST NOT award points for incorrect guesses, empty guesses, or subsequent correct guesses by the same guesser in the same round.
-- **FR-010**: System MUST track and expose a running score per participant across rounds.
-- **FR-011**: System MUST expose a guess history for the current round, including guesser name, guess text, and correctness, to all players.
-- **FR-012**: System MUST ensure the secret word is never exposed to guessers in any data they receive from the server.
+- **FR-001**: System MUST detect room status changes from "lobby" to "playing" via polling and automatically redirect all players (drawer and guessers) from the lobby view to the game view.
+- **FR-002**: System MUST provide a drawing surface that responds to the drawer's pointer input during an active round.
+- **FR-003**: System MUST provide a "Clear Canvas" button for the drawer that resets the canvas to blank.
+- **FR-004**: System MUST make the current canvas state available to all players so that guessers see the drawing.
+- **FR-005**: System MUST accept guess submissions from non-drawer participants during an active round.
+- **FR-006**: System MUST trim leading and trailing whitespace from submitted guesses before validation.
+- **FR-007**: System MUST reject empty or whitespace-only guesses with a clear error message.
+- **FR-008**: System MUST compare guesses against the secret word case-insensitively.
+- **FR-009**: System MUST award 100 points to a guesser for their first correct guess in a round.
+- **FR-010**: System MUST NOT award points for incorrect guesses, empty guesses, or subsequent correct guesses by the same guesser in the same round.
+- **FR-011**: System MUST track and expose a running score per participant across rounds.
+- **FR-012**: System MUST expose a guess history for the current round, including guesser name, guess text, and correctness, to all players.
+- **FR-013**: System MUST ensure the secret word is never exposed to guessers in any data they receive from the server.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -95,11 +112,12 @@ All players can see the full history of guesses for the current round, including
 
 ### Measurable Outcomes
 
-- **SC-001**: A guesser can submit a guess and see their score reflect +100 (correct) or +0 (incorrect) within 2 seconds of submission.
-- **SC-002**: Empty or whitespace-only guesses are rejected with an error message within 1 second of submission.
-- **SC-003**: A guesser can see the current canvas state within 3 seconds of the drawer drawing or clearing.
-- **SC-004**: The guess history shows all guesses for the current round, including correctness, to all players within 3 seconds of a guess being submitted.
-- **SC-005**: All players' scores are consistent across all screens at all times (no player sees a different score for the same participant).
+- **SC-001**: When the host starts the game, all guessers are redirected from the lobby to the game view within 3 seconds.
+- **SC-002**: A guesser can submit a guess and see their score reflect +100 (correct) or +0 (incorrect) within 2 seconds of submission.
+- **SC-003**: Empty or whitespace-only guesses are rejected with an error message within 1 second of submission.
+- **SC-004**: A guesser can see the current canvas state within 3 seconds of the drawer drawing or clearing.
+- **SC-005**: The guess history shows all guesses for the current round, including correctness, to all players within 3 seconds of a guess being submitted.
+- **SC-006**: All players' scores are consistent across all screens at all times (no player sees a different score for the same participant).
 
 ## Assumptions
 
