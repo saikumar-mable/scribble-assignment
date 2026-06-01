@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Participant, ParticipantRole, Room, RoomSnapshot } from "../models/game.js";
+import type { Guess, Participant, ParticipantRole, Room, RoomSnapshot, Stroke } from "../models/game.js";
 import { STARTER_WORDS } from "../seed/starterData.js";
 
 const rooms = new Map<string, Room>();
@@ -58,6 +58,10 @@ export function createRoom(playerName?: string) {
     participants: [participant],
     currentDrawerId: null,
     roundNumber: 0,
+    scores: {},
+    guesses: [],
+    correctGuessers: [],
+    canvasStrokes: [],
     createdAt: now(),
     updatedAt: now()
   };
@@ -128,6 +132,10 @@ export function startGame(code: string, participantId: string) {
   room.currentDrawerId = room.hostId;
   room.roundNumber = 1;
   room.status = "playing";
+  room.scores = {};
+  room.guesses = [];
+  room.correctGuessers = [];
+  room.canvasStrokes = [];
   room.updatedAt = now();
   rooms.set(room.code, room);
 
@@ -138,6 +146,105 @@ export function saveRoom(room: Room) {
   room.updatedAt = now();
   rooms.set(room.code, cloneRoom(room));
   return getRoom(room.code);
+}
+
+interface SubmitGuessResult {
+  result: "correct" | "incorrect" | "error";
+  guess: Guess;
+  scores: Record<string, number>;
+  guesses: Guess[];
+  error?: string;
+}
+
+export function submitGuess(code: string, participantId: string, text: string): SubmitGuessResult | null {
+  const room = rooms.get(code);
+
+  if (!room) {
+    return null;
+  }
+
+  if (room.status !== "playing") {
+    return { result: "error", error: "Round is not active", guess: {} as Guess, scores: {}, guesses: [] };
+  }
+
+  if (room.currentDrawerId === participantId) {
+    return { result: "error", error: "Drawer cannot submit guesses", guess: {} as Guess, scores: {}, guesses: [] };
+  }
+
+  const participant = room.participants.find((p) => p.id === participantId);
+  if (!participant) {
+    return null;
+  }
+
+  const secretWord = getSecretWord(room);
+  if (!secretWord) {
+    return { result: "error", error: "No secret word set for this round", guess: {} as Guess, scores: {}, guesses: [] };
+  }
+
+  const trimmedText = text.trim();
+  const isCorrect = trimmedText.toLowerCase() === secretWord.toLowerCase();
+  const alreadyCorrect = room.correctGuessers.includes(participantId);
+
+  const guess: Guess = {
+    participantId,
+    participantName: participant.name,
+    text: trimmedText,
+    isCorrect,
+    timestamp: now()
+  };
+
+  room.guesses.push(guess);
+
+  let result: "correct" | "incorrect" = "incorrect";
+  if (isCorrect && !alreadyCorrect) {
+    room.scores[participantId] = (room.scores[participantId] ?? 0) + 100;
+    room.correctGuessers.push(participantId);
+    result = "correct";
+  }
+
+  room.updatedAt = now();
+  rooms.set(room.code, room);
+
+  return {
+    result,
+    guess,
+    scores: { ...room.scores },
+    guesses: [...room.guesses]
+  };
+}
+
+export function getCanvasState(code: string): Stroke[] | null {
+  const room = rooms.get(code);
+  if (!room) return null;
+  return room.canvasStrokes;
+}
+
+export function saveCanvasState(code: string, participantId: string, strokes: Stroke[]): boolean {
+  const room = rooms.get(code);
+  if (!room) return false;
+  if (room.currentDrawerId !== participantId) return false;
+
+  room.canvasStrokes = strokes;
+  room.updatedAt = now();
+  rooms.set(room.code, room);
+  return true;
+}
+
+export function clearCanvasState(code: string, participantId: string): boolean {
+  const room = rooms.get(code);
+  if (!room) return false;
+  if (room.currentDrawerId !== participantId) return false;
+
+  room.canvasStrokes = [];
+  room.updatedAt = now();
+  rooms.set(room.code, room);
+  return true;
+}
+
+export function getGuesses(code: string): Guess[] | null {
+  const room = rooms.get(code);
+  if (!room) return null;
+  return [...room.guesses];
 }
 
 function computeRoles(room: Room): ParticipantRole[] {
@@ -170,6 +277,8 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     roles: computeRoles(room),
     currentDrawerId: room.currentDrawerId,
     roundNumber: room.roundNumber,
-    secretWord: isViewerDrawer ? secretWord : null
+    secretWord: isViewerDrawer ? secretWord : null,
+    scores: { ...room.scores },
+    guesses: [...room.guesses]
   };
 }
