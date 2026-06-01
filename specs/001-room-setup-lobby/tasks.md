@@ -73,10 +73,10 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 2
 
-- [ ] T008 [P] [US2] Add duplicate display name disambiguation (suffix " (2)", " (3)" etc.) in `backend/src/services/roomStore.ts`
-- [ ] T009 [P] [US2] Add empty/whitespace player name validation (trim, reject) in join flow in `backend/src/api/rooms.ts`
-- [ ] T010 [P] [US2] Add empty/whitespace room code client-side validation in `frontend/src/pages/JoinRoomPage.tsx`
-- [ ] T011 [US2] Display backend join error messages in `frontend/src/pages/JoinRoomPage.tsx`
+- [X] T008 [P] [US2] Add duplicate display name disambiguation (suffix " (2)", " (3)" etc.) in `backend/src/services/roomStore.ts`
+- [X] T009 [P] [US2] Add empty/whitespace player name validation (trim, reject) in join flow in `backend/src/api/schemas.ts` and `backend/src/api/router.ts`
+- [X] T010 [P] [US2] Add empty/whitespace room code client-side validation in `frontend/src/pages/JoinRoomPage.tsx`
+- [X] T011 [US2] Display backend join error messages in `frontend/src/pages/JoinRoomPage.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 

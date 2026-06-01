@@ -68,6 +68,19 @@ export function createRoom(playerName?: string) {
   };
 }
 
+function disambiguateName(name: string, existingNames: string[]) {
+  if (!existingNames.includes(name)) {
+    return name;
+  }
+
+  let suffix = 2;
+  while (existingNames.includes(`${name} (${suffix})`)) {
+    suffix++;
+  }
+
+  return `${name} (${suffix})`;
+}
+
 export function joinRoom(code: string, playerName?: string) {
   const room = rooms.get(code);
 
@@ -76,6 +89,10 @@ export function joinRoom(code: string, playerName?: string) {
   }
 
   const participant = createParticipant(playerName);
+  participant.name = disambiguateName(
+    participant.name,
+    room.participants.map((p) => p.name)
+  );
   room.participants.push(participant);
   room.updatedAt = now();
   rooms.set(room.code, room);
