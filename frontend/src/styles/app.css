@@ -530,6 +530,27 @@ input {
   font-weight: 600;
 }
 
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.canvas-element {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  display: block;
+}
+
+.canvas-toolbar {
+  display: flex;
+  gap: 12px;
+}
+
 /* Responsive grid: 3-column layout */
 .game-page__layout {
   display: grid;

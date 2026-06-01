@@ -1,21 +1,75 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { Canvas } from "../components/Canvas";
 import { Card } from "../components/Card";
 import { GuessForm } from "../components/GuessForm";
 import { ResultPanel } from "../components/ResultPanel";
 import { RoomCodeBadge } from "../components/RoomCodeBadge";
 import { Scoreboard } from "../components/Scoreboard";
-import { useRoomState } from "../state/roomStore";
+import { useRoomState, useRoomStore } from "../state/roomStore";
 
 export function GamePage() {
   const navigate = useNavigate();
-  const { room, participantId } = useRoomState();
+  const roomStore = useRoomStore();
+  const { room, participantId, canvasStrokes } = useRoomState();
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
     if (!room) {
       navigate("/", { replace: true });
     }
   }, [navigate, room]);
+
+  useEffect(() => {
+    if (!room) return;
+    hasNavigatedRef.current = false;
+
+    const roomInterval = setInterval(async () => {
+      try {
+        const updatedRoom = await roomStore.fetchRoom();
+        if (updatedRoom && updatedRoom.status !== "playing" && !hasNavigatedRef.current) {
+          hasNavigatedRef.current = true;
+          navigate("/lobby", { replace: true });
+        }
+      } catch {
+        // poll error — keep trying
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(roomInterval);
+    };
+  }, [room, roomStore, navigate]);
+
+  useEffect(() => {
+    if (!room || !room.currentDrawerId) return;
+
+    const isViewerDrawer = participantId === room.currentDrawerId;
+    if (isViewerDrawer) return;
+
+    const canvasInterval = setInterval(async () => {
+      try {
+        await roomStore.fetchCanvas();
+      } catch {
+        // poll error — keep trying
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(canvasInterval);
+    };
+  }, [room, participantId, roomStore]);
+
+  const handleStrokesChange = useCallback(
+    async (strokes: import("../services/api").Stroke[]) => {
+      await roomStore.saveCanvas(strokes);
+    },
+    [roomStore]
+  );
+
+  const handleClear = useCallback(async () => {
+    await roomStore.clearCanvas();
+  }, [roomStore]);
 
   if (!room) {
     return null;
@@ -51,15 +105,12 @@ export function GamePage() {
 
         <div className="game-page__main">
           <Card title="Canvas">
-            <div className="canvas-placeholder" style={{ minHeight: '500px', backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}>
-              {drawer ? (
-                <p className="drawer-indicator">
-                  {isDrawer ? "You are drawing!" : `${drawer.name} is drawing...`}
-                </p>
-              ) : (
-                "Waiting for drawer..."
-              )}
-            </div>
+            <Canvas
+              strokes={canvasStrokes}
+              isDrawer={isDrawer}
+              onStrokesChange={handleStrokesChange}
+              onClear={handleClear}
+            />
           </Card>
         </div>
 
