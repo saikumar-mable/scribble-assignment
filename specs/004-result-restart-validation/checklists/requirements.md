@@ -28,20 +28,20 @@
 ## Implementation Checklist
 
 ### Backend
-- [ ] T001: RoomStatus includes "result"
-- [ ] T002: endRound(), restartGame(), auto-end in submitGuess
-- [ ] T003: endRoundSchema, restartGameSchema
-- [ ] T004: POST /:code/end-round, POST /:code/restart
-- [ ] T005: toRoomSnapshot reveals secretWord in result state
+- [X] T001: RoomStatus includes "result"
+- [X] T002: endRound(), restartGame(), auto-end in submitGuess
+- [X] T003: endRoundSchema, restartGameSchema
+- [X] T004: POST /:code/end-round, POST /:code/restart
+- [X] T005: toRoomSnapshot reveals secretWord in result state
 
 ### Frontend
-- [ ] T006: RoomSnapshot.status includes "result"
-- [ ] T007: endRound(), restartGame() API methods
-- [ ] T008: endRound(), restartGame() store methods
-- [ ] T009: ResultView component
-- [ ] T010: Result view CSS
-- [ ] T011: GamePage result detection + End Round button
+- [X] T006: RoomSnapshot.status includes "result"
+- [X] T007: endRound(), restartGame() API methods
+- [X] T008: endRound(), restartGame() store methods
+- [X] T009: ResultView component
+- [X] T010: Result view CSS
+- [X] T011: GamePage result detection + End Round button
 
 ### Build
-- [ ] T012: Backend build passes
-- [ ] T012: Frontend build passes
+- [X] T012: Backend build passes
+- [X] T012: Frontend build passes
