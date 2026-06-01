@@ -90,11 +90,11 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 3
 
-- [ ] T012 [P] [US3] Add `startGame(code, participantId)` method with host validation and ≥2 player check in `backend/src/services/roomStore.ts`
-- [ ] T013 [P] [US3] Add `POST /rooms/:code/start` route handler with 403/400/404 error responses in `backend/src/api/rooms.ts`
-- [ ] T014 [P] [US3] Add `startGame(code, participantId)` API client method in `frontend/src/services/api.ts`
-- [ ] T015 [US3] Show "Start Game" button for host only; disable with "Need 2+ players" message when <2 players in `frontend/src/pages/LobbyPage.tsx`
-- [ ] T016 [US3] Handle post-start transition from lobby to game screen in `frontend/src/pages/LobbyPage.tsx`
+- [X] T012 [P] [US3] Add `startGame(code, participantId)` method with host validation and ≥2 player check in `backend/src/services/roomStore.ts`
+- [X] T013 [P] [US3] Add `POST /rooms/:code/start` route handler with 403/400/404 error responses in `backend/src/api/rooms.ts`
+- [X] T014 [P] [US3] Add `startGame(code, participantId)` API client method in `frontend/src/services/api.ts`
+- [X] T015 [US3] Show "Start Game" button for host only; disable with "Need 2+ players" message when <2 players in `frontend/src/pages/LobbyPage.tsx`
+- [X] T016 [US3] Handle post-start transition from lobby to game screen in `frontend/src/pages/LobbyPage.tsx`
 
 **Checkpoint**: All user stories should now be independently functional
 
