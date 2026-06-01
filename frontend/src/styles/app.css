@@ -551,6 +551,33 @@ input {
   gap: 12px;
 }
 
+.scoreboard-list {
+  display: grid;
+  gap: 8px;
+}
+
+.scoreboard-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.scoreboard-name {
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.scoreboard-value {
+  color: var(--brand);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
 /* Responsive grid: 3-column layout */
 .game-page__layout {
   display: grid;
