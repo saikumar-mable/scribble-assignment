@@ -71,7 +71,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 - [X] T004 [P] [US2] Set `currentDrawerId` (host), `roundNumber` (1), roles (host=drawer, others=guesser) in `startGame()` in `backend/src/services/roomStore.ts`
 - [X] T005 [P] [US2] Expose `currentDrawerId`, `roundNumber`, `roles` (computed per-participant) in `toRoomSnapshot()`; derive `secretWord` from `STARTER_WORDS[roundNumber - 1]` and filter per-participant (null for non-drawer, actual word for drawer) in `backend/src/services/roomStore.ts`
-- [ ] T006 [P] [US2] Add `currentDrawerId`, `roundNumber`, `secretWord` to frontend `RoomSnapshot` type; extend `status` union to `"lobby" | "playing"` in `frontend/src/services/api.ts`
+- [X] T006 [P] [US2] Add `currentDrawerId`, `roundNumber`, `secretWord` to frontend `RoomSnapshot` type; extend `status` union to `"lobby" | "playing"` in `frontend/src/services/api.ts`
 - [ ] T007 [US2] Show drawer indicator in `frontend/src/pages/GamePage.tsx` — display the drawer's name prominently and show "You are the drawer" badge for the drawer vs "Drawer: [name]" for guessers
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently

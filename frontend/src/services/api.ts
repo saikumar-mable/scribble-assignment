@@ -8,11 +8,14 @@ export interface Participant {
 
 export interface RoomSnapshot {
   code: string;
-  status: "lobby";
+  status: "lobby" | "playing";
   hostId: string;
   participants: Participant[];
   availableWords: string[];
   roles: ParticipantRole[];
+  currentDrawerId: string | null;
+  roundNumber: number;
+  secretWord: string | null;
 }
 
 export interface RoomSessionResponse {
