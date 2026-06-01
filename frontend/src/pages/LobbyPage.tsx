@@ -24,8 +24,12 @@ export function LobbyPage() {
 
     const interval = setInterval(async () => {
       try {
-        await roomStore.fetchRoom();
+        const updatedRoom = await roomStore.fetchRoom();
         setHasPollError(false);
+
+        if (updatedRoom && updatedRoom.status === "playing" && window.location.pathname !== "/game") {
+          navigate("/game");
+        }
       } catch {
         setHasPollError(true);
       }
@@ -35,7 +39,7 @@ export function LobbyPage() {
       clearInterval(interval);
       setHasPollError(false);
     };
-  }, [room, roomStore]);
+  }, [room, roomStore, navigate]);
 
   async function handleRefresh() {
     try {
