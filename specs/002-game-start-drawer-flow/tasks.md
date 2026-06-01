@@ -96,7 +96,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T009 Run build validation: `npm run build` in both `backend/` and `frontend/`
+- [X] T009 Run build validation: `npm run build` in both `backend/` and `frontend/`
 
 ---
 
