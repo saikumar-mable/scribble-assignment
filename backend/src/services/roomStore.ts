@@ -142,6 +142,59 @@ export function startGame(code: string, participantId: string) {
   return { ok: true as const, room: cloneRoom(room) };
 }
 
+export function endRound(code: string, participantId: string) {
+  const room = rooms.get(code);
+
+  if (!room) {
+    return { ok: false as const, error: 404 };
+  }
+
+  if (room.status === "result") {
+    return { ok: true as const, room: cloneRoom(room) };
+  }
+
+  if (room.status !== "playing") {
+    return { ok: false as const, error: 400 };
+  }
+
+  if (room.currentDrawerId !== participantId) {
+    return { ok: false as const, error: 403 };
+  }
+
+  room.status = "result";
+  room.updatedAt = now();
+  rooms.set(room.code, room);
+
+  return { ok: true as const, room: cloneRoom(room) };
+}
+
+export function restartGame(code: string, participantId: string) {
+  const room = rooms.get(code);
+
+  if (!room) {
+    return { ok: false as const, error: 404 };
+  }
+
+  if (room.hostId !== participantId) {
+    return { ok: false as const, error: 403 };
+  }
+
+  if (room.status !== "result") {
+    return { ok: false as const, error: 400 };
+  }
+
+  room.status = "lobby";
+  room.currentDrawerId = null;
+  room.roundNumber = 0;
+  room.guesses = [];
+  room.correctGuessers = [];
+  room.canvasStrokes = [];
+  room.updatedAt = now();
+  rooms.set(room.code, room);
+
+  return { ok: true as const, room: cloneRoom(room) };
+}
+
 export function saveRoom(room: Room) {
   room.updatedAt = now();
   rooms.set(room.code, cloneRoom(room));
@@ -153,6 +206,7 @@ interface SubmitGuessResult {
   guess: Guess;
   scores: Record<string, number>;
   guesses: Guess[];
+  roomStatus: RoomStatus;
   error?: string;
 }
 
@@ -164,11 +218,11 @@ export function submitGuess(code: string, participantId: string, text: string): 
   }
 
   if (room.status !== "playing") {
-    return { result: "error", error: "Round is not active", guess: {} as Guess, scores: {}, guesses: [] };
+    return { result: "error", error: "Round is not active", guess: {} as Guess, scores: {}, guesses: [], roomStatus: room.status };
   }
 
   if (room.currentDrawerId === participantId) {
-    return { result: "error", error: "Drawer cannot submit guesses", guess: {} as Guess, scores: {}, guesses: [] };
+    return { result: "error", error: "Drawer cannot submit guesses", guess: {} as Guess, scores: {}, guesses: [], roomStatus: room.status };
   }
 
   const participant = room.participants.find((p) => p.id === participantId);
@@ -178,7 +232,7 @@ export function submitGuess(code: string, participantId: string, text: string): 
 
   const secretWord = getSecretWord(room);
   if (!secretWord) {
-    return { result: "error", error: "No secret word set for this round", guess: {} as Guess, scores: {}, guesses: [] };
+    return { result: "error", error: "No secret word set for this round", guess: {} as Guess, scores: {}, guesses: [], roomStatus: room.status };
   }
 
   const trimmedText = text.trim();
@@ -202,6 +256,12 @@ export function submitGuess(code: string, participantId: string, text: string): 
     result = "correct";
   }
 
+  const nonDrawerParticipants = room.participants.filter((p) => p.id !== room.currentDrawerId);
+  const allCorrect = nonDrawerParticipants.length > 0 && nonDrawerParticipants.every((p) => room.correctGuessers.includes(p.id));
+  if (allCorrect) {
+    room.status = "result";
+  }
+
   room.updatedAt = now();
   rooms.set(room.code, room);
 
@@ -209,7 +269,8 @@ export function submitGuess(code: string, participantId: string, text: string): 
     result,
     guess,
     scores: { ...room.scores },
-    guesses: [...room.guesses]
+    guesses: [...room.guesses],
+    roomStatus: room.status
   };
 }
 
