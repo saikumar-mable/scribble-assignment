@@ -40,7 +40,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T001 [P] Add `currentDrawerId`, `roundNumber` to `Room` interface; add `currentDrawerId`, `roundNumber`, `secretWord` to `RoomSnapshot` in `backend/src/models/game.ts`
+- [X] T001 [P] Add `currentDrawerId`, `roundNumber` to `Room` interface; add `currentDrawerId`, `roundNumber`, `secretWord` to `RoomSnapshot` in `backend/src/models/game.ts`
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
