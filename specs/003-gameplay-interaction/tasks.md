@@ -25,70 +25,24 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T001 [P] Add Point, Stroke, Guess types and Room/RoomSnapshot fields (scores, guesses, correctGuessers, canvasStrokes) in `backend/src/models/game.ts`
-- [ ] T002 [P] Add submitGuessSchema (with .trim().min(1).max(100)), saveCanvasSchema, clearCanvasSchema in `backend/src/api/schemas.ts`
-- [ ] T003 Add room store functions (submitGuess, saveCanvasState, clearCanvasState, getCanvasState, getGuesses) + update createRoom/startGame initializers in `backend/src/services/roomStore.ts`
-- [ ] T004 Add POST /:code/guess, GET /:code/canvas, POST /:code/canvas, POST /:code/canvas/clear routes in `backend/src/api/rooms.ts`
-- [ ] T005 [P] Add submitGuess, fetchCanvas, saveCanvas, clearCanvas API methods in `frontend/src/services/api.ts`
-- [ ] T006 Add store methods + state for guesses and canvas strokes; set up canvas polling at 1s and room polling at 2s in `frontend/src/state/roomStore.ts`
+- [X] T001 [P] Add Point, Stroke, Guess types and Room/RoomSnapshot fields (scores, guesses, correctGuessers, canvasStrokes) in `backend/src/models/game.ts`
+- [X] T002 [P] Add submitGuessSchema (with .trim().min(1).max(100)), saveCanvasSchema, clearCanvasSchema in `backend/src/api/schemas.ts`
+- [X] T003 Add room store functions (submitGuess, saveCanvasState, clearCanvasState, getCanvasState, getGuesses) + update createRoom/startGame initializers in `backend/src/services/roomStore.ts`
+- [X] T004 Add POST /:code/guess, GET /:code/canvas, POST /:code/canvas, POST /:code/canvas/clear routes in `backend/src/api/rooms.ts`
+- [X] T005 [P] Add submitGuess, fetchCanvas, saveCanvas, clearCanvas API methods in `frontend/src/services/api.ts`
+- [X] T006 Add store methods + state for guesses and canvas strokes; set up canvas polling at 1s and room polling at 2s in `frontend/src/state/roomStore.ts`
 
-**Checkpoint**: Foundation ready — all backend endpoints functional, frontend can call them. User story implementation can now begin.
+- [X] T007 [US2] Add auto-redirect to /game in lobby polling callback in `frontend/src/pages/LobbyPage.tsx` when `room.status === "playing"` (guard against redirect loop — only redirect if current path is not /game)
 
----
+- [X] T008 [P] [US1] Create Canvas component with pointer-event drawing (pointerdown/move/up) + clear button; single fixed color (black) per spec assumption in `frontend/src/components/Canvas.tsx`
+- [X] T009 [US1] Integrate Canvas into GamePage, add canvas polling for guessers at 1s interval, wire save/clear/clearCanvas, add CSS in `frontend/src/pages/GamePage.tsx` and `frontend/src/styles/app.css`
 
-## Phase 3: User Story 2 — Auto-Navigate to Game on Start (Priority: P1)
+- [X] T010 [US3] Wire GuessForm to call roomStore.submitGuess, display error messages for empty/too-long guesses in `frontend/src/components/GuessForm.tsx`
+- [X] T011 [US3] Wire Scoreboard to render real scores from room data in `frontend/src/components/Scoreboard.tsx`
 
-**Goal**: When the host starts the game from the lobby, all guessers automatically detect the "playing" status via polling and are redirected to the game view.
+- [X] T012 [US4] Wire ResultPanel to render guess history from room data in `frontend/src/components/ResultPanel.tsx`
 
-**Independent Test**: Open two browser tabs and join the same room. Start the game from the host tab. Within 3 seconds, both tabs show the game view.
-
-- [ ] T007 [US2] Add auto-redirect to /game in lobby polling callback in `frontend/src/pages/LobbyPage.tsx` when `room.status === "playing"` (guard against redirect loop — only redirect if current path is not /game)
-
-**Checkpoint**: US2 complete — lobby-to-game redirect works automatically.
-
----
-
-## Phase 4: User Story 1 — Draw and Share Canvas (Priority: P1)
-
-**Goal**: The drawer can draw on an HTML5 Canvas and clear it. The canvas state is available to all players via HTTP polling at 1s interval.
-
-**Independent Test**: Start a game with two browser tabs. The drawer draws a shape. Within a few seconds (at most 1s poll interval + network), the guesser's screen shows the same drawing. Clear canvas → both see blank.
-
-- [ ] T008 [P] [US1] Create Canvas component with pointer-event drawing (pointerdown/move/up) + clear button; single fixed color (black) per spec assumption in `frontend/src/components/Canvas.tsx`
-- [ ] T009 [US1] Integrate Canvas into GamePage, add canvas polling for guessers at 1s interval, wire save/clear/clearCanvas, add CSS in `frontend/src/pages/GamePage.tsx` and `frontend/src/styles/app.css`
-
-**Checkpoint**: US1 complete — drawer draws, guessers see canvas update.
-
----
-
-## Phase 5: User Story 3 — Submit and Score Guesses (Priority: P1)
-
-**Goal**: Guessers submit text guesses. Guesses are trimmed, case-insensitively compared to the secret word. Correct guesses score +100. Empty/long guesses are rejected.
-
-**Independent Test**: Start a game with two guesser tabs. One submits the correct word and gets +100. The other submits an incorrect word and gets +0. Empty submissions are rejected with "Guess cannot be empty". Long submissions rejected with "Guess is too long (max 100 characters)".
-
-- [ ] T010 [US3] Wire GuessForm to call roomStore.submitGuess, display error messages for empty/too-long guesses in `frontend/src/components/GuessForm.tsx`
-- [ ] T011 [US3] Wire Scoreboard to render real scores from room data in `frontend/src/components/Scoreboard.tsx`
-
-**Checkpoint**: US3 complete — guess submission works, scores update, errors display.
-
----
-
-## Phase 6: User Story 4 — Guess History via Polling (Priority: P2)
-
-**Goal**: All players (including drawer) can see the full guess history for the current round — who guessed what and whether it was correct.
-
-**Independent Test**: Multiple guessers submit guesses (correct and incorrect). All players see the guess history update within a few seconds (via 2s room poll).
-
-- [ ] T012 [US4] Wire ResultPanel to render guess history from room data in `frontend/src/components/ResultPanel.tsx`
-
-**Checkpoint**: US4 complete — guess history visible to all players.
-
----
-
-## Phase 7: Polish & Cross-Cutting Concerns
-
-- [ ] T013 Run `npm run build` in both `backend/` and `frontend/` — fix any build errors
+- [X] T013 Run `npm run build` in both `backend/` and `frontend/` — fix any build errors
 
 ---
 
