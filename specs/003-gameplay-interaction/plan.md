@@ -59,7 +59,7 @@ specs/003-gameplay-interaction/
 backend/
 └── src/
     ├── models/game.ts          # NEW: Point, Stroke, Guess types; Room/RoomSnapshot field additions
-    ├── api/schemas.ts          # NEW: submitGuessSchema, saveCanvasSchema
+    ├── api/schemas.ts          # NEW: submitGuessSchema, saveCanvasSchema, clearCanvasSchema
     ├── api/rooms.ts            # NEW: guess, canvas routes
     └── services/roomStore.ts   # NEW: submitGuess, canvas CRUD functions
 

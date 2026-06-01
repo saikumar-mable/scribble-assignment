@@ -26,11 +26,11 @@
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
 - [ ] T001 [P] Add Point, Stroke, Guess types and Room/RoomSnapshot fields (scores, guesses, correctGuessers, canvasStrokes) in `backend/src/models/game.ts`
-- [ ] T002 [P] Add submitGuessSchema, saveCanvasSchema, clearCanvasSchema in `backend/src/api/schemas.ts`
+- [ ] T002 [P] Add submitGuessSchema (with .trim().min(1).max(100)), saveCanvasSchema, clearCanvasSchema in `backend/src/api/schemas.ts`
 - [ ] T003 Add room store functions (submitGuess, saveCanvasState, clearCanvasState, getCanvasState, getGuesses) + update createRoom/startGame initializers in `backend/src/services/roomStore.ts`
 - [ ] T004 Add POST /:code/guess, GET /:code/canvas, POST /:code/canvas, POST /:code/canvas/clear routes in `backend/src/api/rooms.ts`
 - [ ] T005 [P] Add submitGuess, fetchCanvas, saveCanvas, clearCanvas API methods in `frontend/src/services/api.ts`
-- [ ] T006 Add store methods + state for guesses, canvas strokes, and polling intervals in `frontend/src/state/roomStore.ts`
+- [ ] T006 Add store methods + state for guesses and canvas strokes; set up canvas polling at 1s and room polling at 2s in `frontend/src/state/roomStore.ts`
 
 **Checkpoint**: Foundation ready — all backend endpoints functional, frontend can call them. User story implementation can now begin.
 
@@ -42,7 +42,7 @@
 
 **Independent Test**: Open two browser tabs and join the same room. Start the game from the host tab. Within 3 seconds, both tabs show the game view.
 
-- [ ] T007 [US2] Add auto-redirect to /game in lobby polling callback in `frontend/src/pages/LobbyPage.tsx` when `room.status === "playing"`
+- [ ] T007 [US2] Add auto-redirect to /game in lobby polling callback in `frontend/src/pages/LobbyPage.tsx` when `room.status === "playing"` (guard against redirect loop — only redirect if current path is not /game)
 
 **Checkpoint**: US2 complete — lobby-to-game redirect works automatically.
 
@@ -54,8 +54,8 @@
 
 **Independent Test**: Start a game with two browser tabs. The drawer draws a shape. Within a few seconds (at most 1s poll interval + network), the guesser's screen shows the same drawing. Clear canvas → both see blank.
 
-- [ ] T008 [P] [US1] Create Canvas component with pointer-event drawing (pointerdown/move/up) + clear button in `frontend/src/components/Canvas.tsx`
-- [ ] T009 [US1] Integrate Canvas into GamePage, add canvas polling for guessers, wire save/clear/clearCanvas, add CSS in `frontend/src/pages/GamePage.tsx` and `frontend/src/styles/app.css`
+- [ ] T008 [P] [US1] Create Canvas component with pointer-event drawing (pointerdown/move/up) + clear button; single fixed color (black) per spec assumption in `frontend/src/components/Canvas.tsx`
+- [ ] T009 [US1] Integrate Canvas into GamePage, add canvas polling for guessers at 1s interval, wire save/clear/clearCanvas, add CSS in `frontend/src/pages/GamePage.tsx` and `frontend/src/styles/app.css`
 
 **Checkpoint**: US1 complete — drawer draws, guessers see canvas update.
 
