@@ -68,7 +68,7 @@ A secret word is deterministically selected from the starter list for the first 
 - **FR-001**: System MUST trim leading and trailing whitespace from player names on both room creation and room join submission.
 - **FR-002**: System MUST reject player names that are empty or contain only whitespace after trimming, displaying a clear error message.
 - **FR-003**: System MUST assign the host as the drawer when the first round begins.
-- **FR-004**: System MUST clearly indicate to all players who the drawer is on the game screen.
+- **FR-004**: System MUST display the drawer's display name on the game screen for all players, and additionally show a "You are the drawer" badge when the viewer is the drawer versus "Drawer: [name]" for guessers.
 - **FR-005**: System MUST select a secret word deterministically from the starter list for the first round. The same room always gets the same word for round 1.
 - **FR-006**: System MUST display the secret word to the drawer on the game screen.
 - **FR-007**: System MUST ensure the secret word is never visible to guessers — not in the UI and not in any data the guesser receives from the server.

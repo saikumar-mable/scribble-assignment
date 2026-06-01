@@ -40,7 +40,7 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T001 [P] Add `currentDrawerId`, `roundNumber` to `Room` interface; add `currentDrawerId`, `roundNumber`, `secretWord` to `RoomSnapshot`; extend `RoomStatus` to include `"playing"` in `backend/src/models/game.ts`
+- [ ] T001 [P] Add `currentDrawerId`, `roundNumber` to `Room` interface; add `currentDrawerId`, `roundNumber`, `secretWord` to `RoomSnapshot` in `backend/src/models/game.ts`
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
@@ -69,8 +69,8 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 2
 
-- [ ] T004 [P] [US2] Set `currentDrawerId` (host), `roundNumber` (1), roles (host=drawer, others=guesser), and `secretWord` (`STARTER_WORDS[0]`) in `startGame()` in `backend/src/services/roomStore.ts`
-- [ ] T005 [P] [US2] Expose `currentDrawerId`, `roundNumber` in `toRoomSnapshot()`; filter `secretWord` per-participant (null for non-drawer) in `backend/src/services/roomStore.ts`
+- [ ] T004 [P] [US2] Set `currentDrawerId` (host), `roundNumber` (1), roles (host=drawer, others=guesser) in `startGame()` in `backend/src/services/roomStore.ts`
+- [ ] T005 [P] [US2] Expose `currentDrawerId`, `roundNumber`, `roles` (computed per-participant) in `toRoomSnapshot()`; derive `secretWord` from `STARTER_WORDS[roundNumber - 1]` and filter per-participant (null for non-drawer, actual word for drawer) in `backend/src/services/roomStore.ts`
 - [ ] T006 [P] [US2] Add `currentDrawerId`, `roundNumber`, `secretWord` to frontend `RoomSnapshot` type; extend `status` union to `"lobby" | "playing"` in `frontend/src/services/api.ts`
 - [ ] T007 [US2] Show drawer indicator in `frontend/src/pages/GamePage.tsx` — display the drawer's name prominently and show "You are the drawer" badge for the drawer vs "Drawer: [name]" for guessers
 
@@ -136,8 +136,8 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ```bash
 # Launch independent tasks together:
-Task: "Set currentDrawerId, roundNumber, roles, secretWord in startGame"
-Task: "Expose currentDrawerId, roundNumber in toRoomSnapshot; filter secretWord"
+Task: "Set currentDrawerId, roundNumber, roles in startGame"
+Task: "Expose currentDrawerId, roundNumber, roles in toRoomSnapshot; derive and filter secretWord"
 Task: "Add new fields to frontend RoomSnapshot type"
 ```
 
@@ -179,5 +179,8 @@ With multiple developers:
 - Each user story should be independently completable and testable
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
-- T001 already completed in Scenario 1 (`"playing"` status, model fields may need verification)
+- T001 was partially completed in Scenario 1 (`"playing"` status added). The `currentDrawerId`, `roundNumber` fields on `Room`, and `currentDrawerId`, `roundNumber`, `secretWord` on `RoomSnapshot` are **not** yet implemented.
+- A2 finding: Frontend `status` type (`"lobby"` only) is addressed by T006 — the task already specifies the union fix.
+- A4 finding: T005 already specifies `null` for non-drawer `secretWord`. No change needed.
+- A6 finding: The start-game response propagation to polling guessers is transitively covered by the existing `GET /rooms/:code` polling flow (Scenario 1). No separate task needed.
 - Secret word communication: The backend MUST filter `secretWord` per-participant in `toRoomSnapshot()` — guessers receive `null`. This ensures FR-007 compliance (word never leaves server for guessers).
