@@ -40,9 +40,9 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T001 Add `hostId: string` to `Room` interface in `backend/src/models/game.ts`
-- [ ] T002 Expose `hostId` in `RoomSnapshot` in `backend/src/models/game.ts`
-- [ ] T003 [P] Add Zod schemas for required (non-empty) player name validation in `backend/src/api/schemas.ts`
+- [X] T001 Add `hostId: string` to `Room` interface in `backend/src/models/game.ts
+- [X] T002 Expose `hostId` in `RoomSnapshot` in `backend/src/models/game.ts
+- [X] T003 [P] Add Zod schemas for required (non-empty) player name validation in `backend/src/api/schemas.ts
 
 **Checkpoint**: Foundation ready — user story implementation can now begin in parallel
 
@@ -56,10 +56,10 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 ### Implementation for User Story 1
 
-- [ ] T004 [P] [US1] Store `hostId` as the creator's `participantId` on room creation in `backend/src/services/roomStore.ts`
-- [ ] T005 [P] [US1] Add host role to room session response in `backend/src/api/rooms.ts`
-- [ ] T006 [US1] Replace manual "Refresh Room" button with automatic `setInterval` polling at ~2s in `frontend/src/pages/LobbyPage.tsx`
-- [ ] T007 [P] [US1] Show host indicator badge next to host participant in `frontend/src/pages/LobbyPage.tsx`
+- [X] T004 [P] [US1] Store `hostId` as the creator's `participantId` on room creation in `backend/src/services/roomStore.ts
+- [X] T005 [P] [US1] Add host role to room session response in `backend/src/api/rooms.ts`
+- [X] T006 [US1] Replace manual "Refresh Room" button with automatic `setInterval` polling at ~2s in `frontend/src/pages/LobbyPage.tsx`
+- [X] T007 [P] [US1] Show host indicator badge next to host participant in `frontend/src/pages/LobbyPage.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 

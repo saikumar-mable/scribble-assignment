@@ -15,10 +15,12 @@ export function createRoomsRouter() {
     try {
       const { playerName } = createRoomSchema.parse(request.body);
       const result = createRoom(playerName);
+      const snapshot = toRoomSnapshot(result.room, result.participantId);
 
       response.status(201).json({
         participantId: result.participantId,
-        room: toRoomSnapshot(result.room, result.participantId)
+        isHost: snapshot.hostId === result.participantId,
+        room: snapshot
       });
     } catch (error) {
       next(error);
@@ -35,9 +37,12 @@ export function createRoomsRouter() {
         throw new HttpError(404, "Unable to join room");
       }
 
+      const snapshot = toRoomSnapshot(result.room, result.participantId);
+
       response.json({
         participantId: result.participantId,
-        room: toRoomSnapshot(result.room, result.participantId)
+        isHost: snapshot.hostId === result.participantId,
+        room: snapshot
       });
     } catch (error) {
       next(error);

@@ -8,14 +8,25 @@ import { useRoomState, useRoomStore } from "../state/roomStore";
 export function LobbyPage() {
   const navigate = useNavigate();
   const roomStore = useRoomStore();
-  const { room, error, isLoading } = useRoomState();
+  const { room, error, isLoading, participantId } = useRoomState();
   const [refreshError, setRefreshError] = useState<string | null>(null);
+  const isHost = participantId !== null && room !== null && room.hostId === participantId;
 
   useEffect(() => {
     if (!room) {
       navigate("/", { replace: true });
     }
   }, [navigate, room]);
+
+  useEffect(() => {
+    if (!room) return;
+
+    const interval = setInterval(() => {
+      roomStore.fetchRoom().catch(() => {});
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [room, roomStore]);
 
   async function handleRefresh() {
     try {
@@ -49,7 +60,12 @@ export function LobbyPage() {
             <ul className="player-list">
               {room.participants.map((participant) => (
                 <li key={participant.id}>
-                  <span>{participant.name}</span>
+                  <span>
+                    {participant.name}
+                    {participant.id === room.hostId && (
+                      <span className="player-list__host-badge">Host</span>
+                    )}
+                  </span>
                   <span className="player-list__meta">joined</span>
                 </li>
               ))}
@@ -69,9 +85,11 @@ export function LobbyPage() {
         <button className="button button--secondary" disabled={isLoading} onClick={handleRefresh}>
           {isLoading ? "Refreshing..." : "Refresh Room"}
         </button>
-        <button className="button button--primary" onClick={() => navigate("/game")}>
-          Start Game
-        </button>
+        {isHost && (
+          <button className="button button--primary" onClick={() => navigate("/game")}>
+            Start Game
+          </button>
+        )}
       </div>
     </section>
   );

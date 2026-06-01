@@ -27,5 +27,6 @@ export interface RoomSnapshot {
 
 export interface RoomSessionResponse {
   participantId: string;
+  isHost: boolean;
   room: RoomSnapshot;
 }
