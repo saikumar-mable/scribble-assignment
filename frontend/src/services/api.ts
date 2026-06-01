@@ -23,7 +23,7 @@ export interface Participant {
 
 export interface RoomSnapshot {
   code: string;
-  status: "lobby" | "playing";
+  status: "lobby" | "playing" | "result";
   hostId: string;
   participants: Participant[];
   availableWords: string[];
