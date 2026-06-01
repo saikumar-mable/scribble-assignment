@@ -80,7 +80,7 @@ All players can see the full history of guesses for the current round, including
 - Multiple guessers guess correctly in the same round — each gets +100 for their first correct guess.
 - Canvas is cleared by the drawer while a guesser is viewing — on the next poll, the guesser sees a blank canvas.
 - Guesser submits a guess during a round transition — guess should be rejected with an appropriate error (round is no longer active).
-- Extremely long guess text — system should handle gracefully by truncating or rejecting with a message.
+- Guess text exceeding 100 characters — system MUST reject with error message "Guess is too long (max 100 characters)".
 - Player's poll request fails during the lobby-to-game transition — they remain on the lobby view until the next successful poll detects the "playing" status.
 
 ## Requirements *(mandatory)*
@@ -93,7 +93,8 @@ All players can see the full history of guesses for the current round, including
 - **FR-004**: System MUST make the current canvas state available to all players so that guessers see the drawing.
 - **FR-005**: System MUST accept guess submissions from non-drawer participants during an active round.
 - **FR-006**: System MUST trim leading and trailing whitespace from submitted guesses before validation.
-- **FR-007**: System MUST reject empty or whitespace-only guesses with a clear error message.
+- **FR-007**: System MUST reject empty or whitespace-only guesses with the error message "Guess cannot be empty".
+- **FR-007b**: System MUST reject guesses exceeding 100 characters with the error message "Guess is too long (max 100 characters)".
 - **FR-008**: System MUST compare guesses against the secret word case-insensitively.
 - **FR-009**: System MUST award 100 points to a guesser for their first correct guess in a round.
 - **FR-010**: System MUST NOT award points for incorrect guesses, empty guesses, or subsequent correct guesses by the same guesser in the same round.
@@ -125,7 +126,7 @@ All players can see the full history of guesses for the current round, including
 - The canvas is a basic 2D drawing surface (freehand drawing with a single color/brush). Advanced drawing tools (color picker, brush sizes, shapes) are out of scope.
 - Canvas state is synced via periodic updates, not real-time streaming. This means there may be a short delay between drawing and visibility for other players.
 - The drawer can see all guesses during the round (adds to the shared game experience).
-- The polling interval is assumed to be 2 seconds (matching Scenario 2's lobby polling interval) for canvas state and guess history.
+- The room polling interval is 2 seconds (matching Scenario 2's lobby interval) for room state, scores, and guess history. The canvas endpoint is polled at 1 second for smoother drawing updates.
 - Guesses are compared against the secret word on the server side only — the word never leaves the server for guessers (preserving FR-007 from Scenario 2).
 - Scores persist across rounds within the same game session but reset when a new game is created.
 - Multiple rounds and round transitions are out of scope for this scenario — the round is assumed to be active throughout.
