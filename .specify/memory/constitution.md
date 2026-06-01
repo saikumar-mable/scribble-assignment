@@ -1,50 +1,63 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- Sync Impact Report: unversioned template → v1.0.0 -->
+<!-- Modified Principles: (all new — first fill from template) -->
+<!--   PRINCIPLE_1 → I. Clean Code & Atomic Commits -->
+<!--   PRINCIPLE_2 → II. Deterministic & Testable Game Logic -->
+<!--   PRINCIPLE_3 → III. TypeScript Strictness -->
+<!--   PRINCIPLE_4 → IV. Spec-Artifact Consistency -->
+<!--   PRINCIPLE_5 → V. Brownfield Respect -->
+<!-- Added Sections: Technical Constraints, Development Workflow, Governance rules -->
+<!-- Removed Sections: none -->
+<!-- Templates Requiring Updates: -->
+<!--   .specify/templates/plan-template.md → ✅ "Constitution Check" gate is generic placeholder; no change needed -->
+<!--   .specify/templates/spec-template.md → ✅ no principle-specific references -->
+<!--   .specify/templates/tasks-template.md → ✅ "Commit after each task" aligns with Principle I -->
+<!--   .specify/templates/constitution-template.md → ✅ upstream, not consumed directly -->
+<!--   .specify/templates/agent-file-template.md → ✅ no constitution references -->
+<!--   .specify/templates/checklist-template.md → ✅ no constitution references -->
+<!--   AGENTS.md → ✅ no constitution references -->
+<!-- Follow-up TODOs: none -->
+
+# Scribble Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Clean Code & Atomic Commits
+Code MUST be clean, readable, and adhere to project conventions. Commits MUST be small, atomic, and represent a single logical change. Each commit MUST build without errors. Commit messages MUST be meaningful and explain the rationale — not just the mechanic. Work-in-progress or fixup commits MUST be squashed before reaching main branches.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Deterministic & Testable Game Logic
+All game rules (scoring, word selection, drawer assignment, round transitions) MUST be deterministic given identical inputs. Game logic MUST be implemented in pure functions isolated from I/O (HTTP, canvas) wherever possible. Each acceptance scenario in the spec MUST have a corresponding test or manual validation procedure reproducible in two browser tabs.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. TypeScript Strictness
+All code MUST be fully typed. The `any` type is FORBIDDEN — use `unknown` when the type is genuinely dynamic. The `tsconfig` strict flag MUST be enabled. The project MUST build with zero errors. Prefer `const` over `let` and immutable data structures over mutable ones.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Spec-Artifact Consistency
+The constitution, spec, plan, and tasks artifacts MUST accurately reflect the current implementation state. Before writing code, update the relevant artifact to describe what will be built. After implementing, verify the artifact still matches. Deviations between code and spec MUST be documented in a commit message or artifact amendment before the change is merged.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Brownfield Respect
+Existing code MUST NOT be rewritten without explicit justification in the plan artifact. Changes MUST be minimal, targeted, and address only the feature requirement at hand. Out-of-scope features (WebSockets, databases, authentication, new state libraries, unrelated refactors) MUST NOT be implemented even if technically feasible.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technical Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- **No WebSockets**: All client-server sync MUST use HTTP polling (no Socket.io, no WebSocket protocol).
+- **No Databases**: All state MUST be stored in-memory only. Restarting the backend clears all state.
+- **No Authentication**: No user accounts, sessions, JWT, or OAuth.
+- **Tech Stack**: Backend — Node.js + Express + TypeScript + Zod. Frontend — React 18 + React Router 6 + Vite + TypeScript.
+- **In-Memory Room Isolation**: Each room MUST be fully isolated. Room data MUST be cleaned up when no longer needed.
+- **No New Top-Level Dependencies**: Do not add libraries beyond what the starter ships unless the plan artifact explicitly justifies the need.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+1. **Discovery** — Read relevant starter files, document gaps and assumptions.
+2. **Specify** — Write or update the spec artifact with acceptance criteria.
+3. **Clarify** — Resolve ambiguity before planning.
+4. **Plan** — Update the plan artifact with state model, data flow, and file-level changes.
+5. **Tasks** — Decompose the plan into ordered, testable work items.
+6. **Implement** — Complete one meaningful slice at a time. Commit after each slice.
+7. **Validate** — Verify acceptance criteria with two browser tabs. Run `npm run build` in both `backend/` and `frontend/`.
+8. **Move forward** only after the current scenario passes.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all informal practices and ad-hoc conventions. Amendments MUST be documented, versioned (semantic), and accompanied by a rationale. Every pull request MUST include a compliance check against these principles. Violations MUST be called out in review and either fixed or explicitly deferred with a documented reason.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-05-18 | **Last Amended**: 2026-06-01
