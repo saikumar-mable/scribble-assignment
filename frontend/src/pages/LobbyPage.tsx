@@ -10,6 +10,7 @@ export function LobbyPage() {
   const roomStore = useRoomStore();
   const { room, error, isLoading, participantId } = useRoomState();
   const [refreshError, setRefreshError] = useState<string | null>(null);
+  const [hasPollError, setHasPollError] = useState(false);
   const isHost = participantId !== null && room !== null && room.hostId === participantId;
 
   useEffect(() => {
@@ -21,11 +22,19 @@ export function LobbyPage() {
   useEffect(() => {
     if (!room) return;
 
-    const interval = setInterval(() => {
-      roomStore.fetchRoom().catch(() => {});
+    const interval = setInterval(async () => {
+      try {
+        await roomStore.fetchRoom();
+        setHasPollError(false);
+      } catch {
+        setHasPollError(true);
+      }
     }, 2000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setHasPollError(false);
+    };
   }, [room, roomStore]);
 
   async function handleRefresh() {
@@ -86,10 +95,10 @@ export function LobbyPage() {
         </Card>
 
         <Card title="Status">
-          <p className="status-line" style={{ backgroundColor: isLoading ? '#fef3c7' : '#e0e7ff', color: isLoading ? '#b45309' : '#3730a3' }}>
-            {isLoading ? "Refreshing players..." : "Ready to play"}
+          <p className="status-line" style={{ backgroundColor: isLoading ? '#fef3c7' : hasPollError ? '#fee2e2' : '#e0e7ff', color: isLoading ? '#b45309' : hasPollError ? '#991b1b' : '#3730a3' }}>
+            {isLoading ? "Refreshing players..." : hasPollError ? "Connection issues" : "Ready to play"}
           </p>
-          <p style={{ marginTop: '8px' }}>{error ?? refreshError ?? "Waiting for the host to start the game."}</p>
+          <p style={{ marginTop: '8px' }}>{error ?? refreshError ?? (hasPollError ? "Retrying..." : "Waiting for the host to start the game.")}</p>
         </Card>
       </div>
 

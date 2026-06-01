@@ -104,8 +104,8 @@ Project is already scaffolded and initialized. No setup tasks required.
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T017 Handle network failure during lobby polling (graceful retry with error status indicator) in `frontend/src/pages/LobbyPage.tsx`
-- [ ] T018 [P] Run build validation: `npm run build` in both `backend/` and `frontend/`
+- [X] T017 Handle network failure during lobby polling (graceful retry with error status indicator) in `frontend/src/pages/LobbyPage.tsx`
+- [X] T018 [P] Run build validation: `npm run build` in both `backend/` and `frontend/`
 
 ---
 
