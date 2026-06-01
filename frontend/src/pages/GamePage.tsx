@@ -4,6 +4,7 @@ import { Canvas } from "../components/Canvas";
 import { Card } from "../components/Card";
 import { GuessForm } from "../components/GuessForm";
 import { ResultPanel } from "../components/ResultPanel";
+import { ResultView } from "../components/ResultView";
 import { RoomCodeBadge } from "../components/RoomCodeBadge";
 import { Scoreboard } from "../components/Scoreboard";
 import { useRoomState, useRoomStore } from "../state/roomStore";
@@ -27,7 +28,7 @@ export function GamePage() {
     const roomInterval = setInterval(async () => {
       try {
         const updatedRoom = await roomStore.fetchRoom();
-        if (updatedRoom && updatedRoom.status !== "playing" && !hasNavigatedRef.current) {
+        if (updatedRoom && updatedRoom.status === "lobby" && !hasNavigatedRef.current) {
           hasNavigatedRef.current = true;
           navigate("/lobby", { replace: true });
         }
@@ -43,6 +44,7 @@ export function GamePage() {
 
   useEffect(() => {
     if (!room || !room.currentDrawerId) return;
+    if (room.status !== "playing") return;
 
     const isViewerDrawer = participantId === room.currentDrawerId;
     if (isViewerDrawer) return;
@@ -71,8 +73,16 @@ export function GamePage() {
     await roomStore.clearCanvas();
   }, [roomStore]);
 
+  const handleEndRound = useCallback(async () => {
+    await roomStore.endRound();
+  }, [roomStore]);
+
   if (!room) {
     return null;
+  }
+
+  if (room.status === "result") {
+    return <ResultView />;
   }
 
   const viewer = room.participants.find((participant) => participant.id === participantId) ?? null;
@@ -138,10 +148,15 @@ export function GamePage() {
         </aside>
       </div>
 
-      <div className="button-row">
+      <div className="button-row button-row--spread">
         <button className="button button--secondary" onClick={() => navigate("/lobby")}>
           Exit Game
         </button>
+        {isDrawer && (
+          <button className="button button--primary" onClick={handleEndRound}>
+            End Round
+          </button>
+        )}
       </div>
     </section>
   );
