@@ -56,21 +56,32 @@ specs/001-room-setup-lobby/
 backend/
 ├── src/
 │   ├── models/
-│   │   └── room.ts          # Room, Player types
+│   │   └── game.ts           # Room, Participant, RoomSnapshot types
 │   ├── services/
-│   │   └── roomService.ts   # Room CRUD, join, start logic
+│   │   ├── roomStore.ts      # Room CRUD, join, start logic
+│   │   └── roomStore.test.ts
 │   └── api/
-│       └── rooms.ts         # POST /rooms, POST /rooms/:code/join, GET /rooms/:code
+│       ├── rooms.ts          # POST /rooms, POST /rooms/:code/join, GET /rooms/:code
+│       ├── schemas.ts        # Zod validation schemas
+│       └── schemas.test.ts
 
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── Lobby.tsx         # Lobby view with participant list + polling
-│   │   └── StartScreen.tsx   # Create/Join room forms
+│   │   ├── RoomCodeBadge.tsx # Room code display badge
+│   │   ├── PageHeader.tsx
+│   │   └── AppShell.tsx
 │   ├── pages/
-│   │   └── Game.tsx          # Game screen (post-start transition)
-│   └── services/
-│       └── roomApi.ts        # API client for room endpoints
+│   │   ├── StartPage.tsx      # Landing page with Create/Join links
+│   │   ├── CreateRoomPage.tsx # Create room form
+│   │   ├── JoinRoomPage.tsx   # Join room form
+│   │   ├── LobbyPage.tsx      # Lobby view with participant list + polling
+│   │   └── GamePage.tsx       # Game screen (post-start transition)
+│   ├── services/
+│   │   ├── api.ts             # API client for room endpoints
+│   │   └── api.test.ts
+│   └── state/
+│       └── roomStore.ts       # Room session state store
 ```
 
 **Structure Decision**: Option 2 — Web application with backend/ + frontend/ layout matching the existing starter structure.
