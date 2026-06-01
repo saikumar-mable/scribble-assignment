@@ -47,3 +47,4 @@ You are working on a monolithic repository for a multiplayer drawing game ("Scri
 
 ## Recent Changes
 - 001-room-setup-lobby: Added TypeScript 5.x (backend + frontend) + Backend: Express 4, Zod 3, cors. Frontend: React 18, React Router 6, Vite 5.
+- 002-game-start-drawer-flow: Name trimming via Zod .trim(), drawer assignment on game start (host=drawer), deterministic secret word selection and per-participant filtering.
