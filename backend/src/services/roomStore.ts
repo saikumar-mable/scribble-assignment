@@ -56,6 +56,8 @@ export function createRoom(playerName?: string) {
     status: "lobby",
     hostId: participant.id,
     participants: [participant],
+    currentDrawerId: null,
+    roundNumber: 0,
     createdAt: now(),
     updatedAt: now()
   };
@@ -123,6 +125,8 @@ export function startGame(code: string, participantId: string) {
     return { ok: false as const, error: 400 };
   }
 
+  room.currentDrawerId = room.hostId;
+  room.roundNumber = 1;
   room.status = "playing";
   room.updatedAt = now();
   rooms.set(room.code, room);
