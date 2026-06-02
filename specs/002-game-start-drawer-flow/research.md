@@ -37,3 +37,19 @@ No NEEDS CLARIFICATION markers were present in the spec. All design decisions ar
 
 - Scenario 1's `POST /rooms/:code/start` endpoint must be functional.
 - The existing `RoomSnapshot` model already has `roles: ParticipantRole[]` and `availableWords: string[]` — these will be populated correctly rather than using placeholder starter data.
+
+## Gaps & Assumptions
+
+### Gaps (deferred or out of scope)
+- **No multi-round word rotation**: The word list has a fixed set of words indexed by `roundNumber - 1`. If the game exceeds the word list length, `getSecretWord` returns `null` silently. No wrap-around or reshuffle mechanism.
+- **No drawer rotation**: The host is always the drawer. There is no mechanism to rotate the drawer role across rounds. Non-host participants are permanent guessers.
+- **No word randomization**: Every room in round 1 gets the same word (`STARTER_WORDS[0]`). Two games played simultaneously would have the same secret word.
+- **No word categories or difficulty**: Words are drawn from a flat list with no filtering by difficulty, theme, or category.
+- **No word reveal animation**: The transition from lobby to game is instantaneous — no countdown, no "Get Ready!" screen, no hint.
+
+### Assumptions
+- **Host = drawer for all rounds**: The implementation assumes the host remains the drawer across all rounds. This is a simplification — no rotation logic was specified.
+- **Word list is sufficient for the session**: A typical game session lasts 2–3 rounds. The seed list (~10 words) is adequate for lab/demo purposes.
+- **Participants are static**: The participant list is captured at game start and never changes mid-session. New players cannot join after the game starts (enforced by the LobbyPage redirect mechanism, not by API validation).
+- **Secret word secrecy is sufficient**: The word is hidden from guessers by omitting it from their snapshot. No additional measures (rate-limiting on guesses, word encryption at rest) are needed for the demo scope.
+- **deterministic word selection aids debugging**: Using round index ensures reproducibility — every round 1 in every room uses the same word, which simplifies testing and debugging.

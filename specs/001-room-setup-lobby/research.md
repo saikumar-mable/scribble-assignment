@@ -31,3 +31,20 @@
 - **Backend**: Unit-test room creation, join, start logic with vitest. Mock the room store. Test duplicate name disambiguation and collision retry logic.
 - **Frontend**: Component tests for LobbyPage polling lifecycle, CreateRoomPage/JoinRoomPage validation. Integration test via two-browser-tab flow.
 - **E2E**: Manual validation using the acceptance scenarios from the spec (two browser tabs).
+
+## Gaps & Assumptions
+
+### Gaps (deferred or out of scope)
+- **No room cleanup**: Rooms remain in memory indefinitely after the game ends. No timeout-based eviction for abandoned rooms.
+- **No leave-room mechanism**: Participants cannot voluntarily leave a room once joined. The only way out is to navigate away.
+- **No max participant limit**: Any number of players can join. No cap enforced at the API level.
+- **No reconnection**: If a player closes their browser tab, their participant record stays in the room forever. No heartbeat or disconnect detection.
+- **No room listing**: There is no API to list available rooms. Players must share the 4-character code out of band.
+- **Error response consistency**: Error messages are human-readable strings rather than structured error codes, making programmatic handling fragile.
+
+### Assumptions
+- **Single-server**: All room state lives in a single Node.js process. No horizontal scaling, no load balancing, no shared state across instances.
+- **Polling is sufficient**: 2-second polling is fast enough for lobby updates. Players will not notice the delay between a host starting the game and their lobby detecting the status change.
+- **Network reliability**: The polling interval assumes intermittent failures are tolerable — a failed poll is silently retried with no exponential backoff or user-facing alert beyond a subtle status change.
+- **Small scale**: The in-memory store assumes <100 concurrent rooms. No pagination, filtering, or indexing is needed for room lookups.
+- **Names are not unique identifiers**: Player names are display-only. The backend uses `participantId` (UUID) for all identity checks. Name collisions are cosmetic.
